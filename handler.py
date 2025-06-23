@@ -8,8 +8,8 @@ import runpod
 # ------------------------------------------------------------------
 #  Environment + defaults
 # ------------------------------------------------------------------
-device        = os.getenv("DEVICE", "cuda")          # "cpu" for Mac/WSL
-compute_type  = os.getenv("COMPUTE_TYPE", "float16") # use "int8" for ≤16 GB GPU
+device = "cuda"  # Always use GPU
+compute_type = "float16"  # Best speed/accuracy tradeoff
 batch_size    = 16                                   # reduce if memory is tight
 language_code = "en"                                 # default language
 
@@ -70,7 +70,7 @@ def handler(event):
     # ------------------------------------------------------------------
     #  Word-level alignment
     # ------------------------------------------------------------------
-    align_model, meta = whisperx.load_align_model(language_code=language_code, device=device)
+    align_model, meta = whisperx.load_align_model(language_code=language_code, device="cuda")
     result            = whisperx.align(result["segments"], align_model, meta, audio, device)
 
     # ------------------------------------------------------------------
