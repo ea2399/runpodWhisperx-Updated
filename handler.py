@@ -268,9 +268,12 @@ def handler(event: Dict[str, Any]) -> Dict[str, Any]:
         # Validate and normalize configuration
         config = validate_input(job_input)
         
-        # Get audio file
+        # Get audio file and validate URL
         if "audio_url" in job_input:
-            local_audio_path = download_to_temp(job_input["audio_url"])
+            audio_url = job_input["audio_url"]
+            if not audio_url or "your-audio-url.mp3" in audio_url:
+                raise ValueError("Please provide a valid 'audio_url' in your input payload.")
+            local_audio_path = download_to_temp(audio_url)
         else:  # audio_base_64
             local_audio_path = base64_to_temp(job_input["audio_base_64"])
         
