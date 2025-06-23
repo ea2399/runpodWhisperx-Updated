@@ -45,7 +45,8 @@ RUN apt-get update && \
 # ──────────────────────────
 # App code
 # ──────────────────────────
-COPY .env.example .env handler.py ./
+COPY .env.example .env
+COPY handler.py ./
 COPY payloads/ ./payloads/
 
 STOPSIGNAL SIGINT

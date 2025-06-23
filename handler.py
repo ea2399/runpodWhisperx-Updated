@@ -155,14 +155,19 @@ def load_alignment_model(language: str, device: str):
 def load_diarization_model(config: Dict[str, Any]):
     """Load the diarization model if requested."""
     try:
-        # Get HF token from environment variable or config
-        hf_token = os.getenv("HF_TOKEN") or config.get("hf_token")
+        # Get HF token from environment variable
+        hf_token = os.getenv("HF_TOKEN")
         
-        if not hf_token:
-            raise ValueError("HuggingFace token not found. Please set HF_TOKEN in your RunPod secrets or in the .env file.")
+        # Check for presence and placeholder values
+        if not hf_token or "your_huggingface_token_here" in hf_token or "PUT_YOUR" in hf_token:
+            raise ValueError(
+                "A valid HuggingFace token is required for speaker diarization. "
+                "Please set HF_TOKEN as a secret in your RunPod endpoint configuration. "
+                "Get a token from https://huggingface.co/settings/tokens"
+            )
 
         return whisperx.DiarizationPipeline(
-            use_auth_token=hf_token, 
+            use_auth_token=hf_token,
             device=config["device"]
         )
     except Exception as e:

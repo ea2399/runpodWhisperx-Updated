@@ -45,9 +45,9 @@ Anyone using your code will:
 3. **Run normally** - everything works automatically
 
 ## 📦 RunPod Deployment Note
-When deploying to RunPod, the `.env` file is automatically copied into your container.
+When deploying from GitHub, the `Dockerfile` automatically creates a `.env` file from `.env.example`. This ensures the build succeeds.
 
-Alternatively, you can set `HF_TOKEN` as a **RunPod Secret** in your endpoint configuration. This is the most secure method and will override any value in the `.env` file.
+For your actual token, you **must** set `HF_TOKEN` as a **RunPod Secret** in your endpoint configuration. This is the most secure method and will override the placeholder value in the `.env` file.
 
 ## 🔒 **Security Benefits**
 
