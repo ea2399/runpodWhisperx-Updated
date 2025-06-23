@@ -281,3 +281,14 @@ def send_synchronous_request_runpod_subtitler(
 
 This project is licensed under the [MIT License](LICENSE).
 
+## Troubleshooting WebSocket Connections
+
+When deploying a chat interface alongside this server, ensure that your frontend
+WebSocket URL points to the public backend host and not to `localhost`. A common
+error message is `ERR_CONNECTION_REFUSED` when the code tries to connect to
+`ws://localhost:8000` even though the backend runs on a different machine. Set
+the appropriate environment variable (for example `VITE_WS_URL` or
+`REACT_APP_WS_URL`) to the fully qualified domain of your deployment such as
+`wss://your-domain.example/chat/ws`. This will allow the chat interface to
+establish the WebSocket connection correctly.
+
