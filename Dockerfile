@@ -36,6 +36,12 @@ RUN ln -sf /usr/lib/x86_64-linux-gnu/libcudnn_ops_infer.so.8 \
            /usr/local/cuda/lib64/libcudnn_ops_infer.so.8
 # ---------------------------------------------------------------------
 
+# ---- install CuDNN runtime & dev libs (brings in libcudnn_ops_infer.so.8) ----
+RUN apt-get update && DEBIAN_FRONTEND=noninteractive \
+    apt-get install -y --no-install-recommends \
+        libcudnn8=8.9.7.* \
+        libcudnn8-dev=8.9.7.*
+
 # COPY the example.mp3 file to the container as a default testing audio file
 COPY example.mp3 /app/example.mp3
 COPY handler.py /app/handler.py
