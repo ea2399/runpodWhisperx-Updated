@@ -1,5 +1,7 @@
 # Summary
 
+**2025 Update:** Dockerfile now targets the latest `runpod/pytorch` base image with Python 3.11 and CUDA 12.8. The required Python packages have been upgraded to modern versions.
+
 This is a Docker Image that runs the [WhisperX](https://github.com/m-bain/whisperX) repository. This is specifically for Runpod, where the handler is setup to get a response with an audio encoded in base64 as a string:
 
 ```
@@ -274,3 +276,8 @@ def send_synchronous_request_runpod_subtitler(
 
     return output
 ```
+
+## License
+
+This project is licensed under the [MIT License](LICENSE).
+

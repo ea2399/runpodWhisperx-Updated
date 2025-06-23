@@ -1,0 +1,4 @@
+runpod==1.7.12
+whisperx==3.3.4
+huggingface_hub==0.33.0
+setuptools-rust>=1.7.0
