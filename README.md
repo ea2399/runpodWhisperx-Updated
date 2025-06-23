@@ -1,16 +1,232 @@
-# Summary
+# WhisperX MCP Server - Enhanced
 
 **2025 Update:** Dockerfile now targets the latest `runpod/pytorch` base image with Python 3.11 and CUDA 12.8. The required Python packages have been upgraded to modern versions.
 
-This is a Docker Image that runs the [WhisperX](https://github.com/m-bain/whisperX) repository. This is specifically for Runpod, where the handler is setup to get a response with an audio encoded in base64 as a string:
+This is an **Enhanced Docker Image** that runs the [WhisperX](https://github.com/m-bain/whisperX) repository with **comprehensive parameter configuration support** for MCP (Model Context Protocol). 
 
-```
+## ✨ New Features (Enhanced Version)
+
+- 🎛️ **Configurable Parameters**: Control every aspect of WhisperX processing
+- 🌍 **Language Detection**: Auto-detect or specify languages
+- 👥 **Speaker Diarization**: Full support with configurable speaker counts
+- ⚡ **Performance Tuning**: Optimize for your GPU memory and speed requirements
+- 🎯 **Model Selection**: Choose from all WhisperX models (tiny to large-v3)
+- 📝 **Advanced Alignment**: Word-level and character-level alignment options
+- 🛡️ **Error Handling**: Comprehensive validation and error reporting
+- 📊 **Detailed Output**: Enhanced response format with metadata
+
+## Basic Usage
+
+### Simple Audio Transcription
+```json
 {
     "input": {
         "audio_base_64": "base64 encoding of audio"
     }
 }
 ```
+
+### Advanced Configuration Example
+```json
+{
+    "input": {
+        "audio_url": "https://example.com/meeting.mp3",
+        "model": "large-v2",
+        "language": "en",
+        "diarize": true,
+        "min_speakers": 2,
+        "max_speakers": 4,
+        "hf_token": "your_huggingface_token",
+        "batch_size": 16,
+        "compute_type": "float16",
+        "highlight_words": true
+    }
+}
+```
+
+## 📋 Configuration Parameters
+
+### Audio Input (Required - Choose One)
+- `audio_url` (string): Direct URL to audio file (MP3, MP4, WAV, etc.) - preferred for large files
+- `audio_base_64` (string): Base64-encoded audio data - alternative to audio_url
+
+### Core WhisperX Parameters
+- `model` (string, default: "small"): WhisperX model size
+  - Options: `"tiny"`, `"base"`, `"small"`, `"medium"`, `"large"`, `"large-v2"`, `"large-v3"`
+- `language` (string, default: "auto"): Language code for transcription
+  - Options: `"auto"`, `"en"`, `"fr"`, `"de"`, `"es"`, `"it"`, `"ja"`, `"zh"`, `"ko"`, etc.
+- `compute_type` (string, default: "float16"): Computation precision
+  - Options: `"float16"` (recommended), `"float32"` (highest quality), `"int8"` (fastest)
+- `device` (string, default: "cuda"): Device to use
+  - Options: `"cuda"`, `"cpu"`
+
+### Performance Parameters
+- `batch_size` (integer, default: 16): Batch size for inference
+  - Lower values use less GPU memory but are slower
+  - Recommended: 32 for 8GB VRAM, 16 for 6GB, 8 for 4GB, 4 for 2GB
+- `condition_on_prev_text` (boolean, default: false): Whether to condition on previous text
+- `without_timestamps` (boolean, default: true): Process without timestamps for faster batching
+- `initial_prompt` (string, optional): Initial prompt to guide transcription
+
+### Alignment Parameters
+- `return_char_alignments` (boolean, default: false): Return character-level alignments
+- `interpolate_method` (string, default: "nearest"): Interpolation method for alignment
+
+### Speaker Diarization Parameters
+- `diarize` (boolean, default: false): Enable speaker diarization
+- `min_speakers` (integer, optional): Minimum number of speakers
+- `max_speakers` (integer, optional): Maximum number of speakers
+- `hf_token` (string, required for diarization): HuggingFace token for diarization models
+
+### Output Parameters
+- `highlight_words` (boolean, default: false): Highlight words in output
+- `segment_resolution` (string, default: "sentence"): Segment resolution
+  - Options: `"sentence"`, `"chunk"`
+
+## 🚀 Usage Examples
+
+### Podcast Transcription with Speaker Identification
+```json
+{
+    "input": {
+        "audio_url": "https://example.com/podcast.mp3",
+        "model": "large-v2",
+        "language": "en",
+        "diarize": true,
+        "min_speakers": 2,
+        "max_speakers": 3,
+        "hf_token": "your_huggingface_token",
+        "batch_size": 20,
+        "highlight_words": true
+    }
+}
+```
+
+### High-Performance Large File Processing
+```json
+{
+    "input": {
+        "audio_url": "https://example.com/long_meeting.mp3",
+        "model": "large-v3",
+        "compute_type": "float16",
+        "batch_size": 32,
+        "language": "auto"
+    }
+}
+```
+
+### Memory-Optimized Configuration
+```json
+{
+    "input": {
+        "audio_base_64": "UklGRiQAAABXQVZFZm10IBAAAAABAAEA...",
+        "model": "small",
+        "compute_type": "int8",
+        "batch_size": 4,
+        "device": "cuda"
+    }
+}
+```
+
+### Multilingual Auto-Detection
+```json
+{
+    "input": {
+        "audio_url": "https://example.com/mixed_languages.mp3",
+        "model": "large-v2",
+        "language": "auto",
+        "batch_size": 12
+    }
+}
+```
+
+## 🔍 Response Format
+
+The enhanced server returns detailed information:
+
+```json
+{
+    "segments": [
+        {
+            "start": 0.0,
+            "end": 5.2,
+            "text": "Hello, this is a test.",
+            "words": [
+                {
+                    "word": "Hello,",
+                    "start": 0.0,
+                    "end": 0.8,
+                    "score": 0.95,
+                    "speaker": "SPEAKER_00"
+                }
+            ],
+            "speaker": "SPEAKER_00"
+        }
+    ],
+    "language": "en",
+    "config_used": {
+        "model": "large-v2",
+        "language": "en",
+        "compute_type": "float16",
+        "batch_size": 16,
+        "diarize": true
+    }
+}
+```
+
+## 🧪 Local Testing
+
+Test the enhanced server locally:
+
+```bash
+# Test with example audio file
+python test_local_example.py
+
+# Test different configurations
+python test_configurations.py
+```
+
+## ⚡ Performance & Memory Guidelines
+
+### GPU Memory Requirements
+- **Large-v3**: ~8GB VRAM (best quality)
+- **Large-v2**: ~6GB VRAM (excellent quality)
+- **Medium**: ~4GB VRAM (good quality)
+- **Small**: ~2GB VRAM (decent quality)
+- **Base**: ~1GB VRAM (basic quality)
+- **Tiny**: ~500MB VRAM (minimal quality)
+
+### Batch Size Recommendations
+- **8GB VRAM**: batch_size 16-32
+- **6GB VRAM**: batch_size 8-16  
+- **4GB VRAM**: batch_size 4-8
+- **2GB VRAM**: batch_size 2-4
+
+### Compute Type Impact
+- **float16**: Best balance of speed and accuracy (recommended)
+- **float32**: Highest accuracy, slower, more memory
+- **int8**: Fastest, lowest memory, may reduce accuracy
+
+## 🔄 Migration from Previous Version
+
+The enhanced version is **fully backward compatible**. Your existing API calls will continue to work unchanged:
+
+```json
+// Old format still works
+{
+    "input": {
+        "audio_base_64": "base64_data",
+        "model": "small",
+        "diarize": false
+    }
+}
+```
+
+New parameters are **optional** with sensible defaults, so you can gradually adopt new features as needed.
+
+## 📖 Documentation
+
+For complete parameter documentation, see `Instructions.md` in this repository.
 
 ## How to Build This Docker Image
 

@@ -1,0 +1,19 @@
+{
+  "input": {
+    "audio_url": "https://your-audio-url.mp3",
+    "model": "large-v3",
+    "language": "en",
+    "compute_type": "float32",
+    "batch_size": 4,
+    "condition_on_prev_text": true,
+    "without_timestamps": false,
+    "initial_prompt": "This is a recording in English with Hebrew and Yiddish words, spoken with a Chassidish accent. Common terms include: Torah, mitzvah, Shabbos, davening, bentching, frum, heimish, chassidus, Rebbe, Hashem, B'ezras Hashem, baruch Hashem, kehillah, beis medrash, beis din, shiur, learning, gemara, Talmud, halacha, psak, posek, rav, rebbe, tzaddik, neshama, ruchniyus, gashmiyus, olam haba, olam hazeh, yeshiva, kollel, avreich, bachur, talmid chacham, gaon, mashgiach, mashpia, sichos, maamar, niggun, tefillin, tallis, mezuzah, kosher, treif, milchig, fleishig, pareve, Rashi, Tosafos, Ramban, Rambam, Shulchan Aruch, Mishnah Berurah, mishnah, baraisa, sugya, machlokes, pshat, drash, halacha l'maaseh, nafka mina, kashya, teirutz, chavrusa, seder, zman, masechta, perek, daf, amud, blatt.",
+    "return_char_alignments": true,
+    "interpolate_method": "linear",
+    "diarize": true,
+    "min_speakers": 1,
+    "max_speakers": 4,
+    "highlight_words": true,
+    "segment_resolution": "sentence"
+  }
+} 

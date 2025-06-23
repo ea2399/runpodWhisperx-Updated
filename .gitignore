@@ -24,7 +24,16 @@ env/
 .vscode/
 .idea/
 
+# Environment files (contains secrets)
+.env
+.env.local
+.env.production
+
+# Spec story files (may contain sensitive information)
+.specstory/
+
 # Output files
 encoded.txt
 test_input.json
+response_*.json
 

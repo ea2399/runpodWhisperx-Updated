@@ -1,0 +1,9 @@
+{
+  "input": {
+    "audio_base_64": "UklGRiQAAABXQVZFZm10IBAAAAABAAEA... (your base64 encoded audio data here)",
+    "model": "medium",
+    "language": "auto",
+    "batch_size": 12,
+    "highlight_words": true
+  }
+} 
