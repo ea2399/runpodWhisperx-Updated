@@ -45,7 +45,8 @@ RUN apt-get update && \
 # ──────────────────────────
 # App code
 # ──────────────────────────
-COPY example.mp3 handler.py ./
+COPY .env.example .env handler.py ./
+COPY payloads/ ./payloads/
 
 STOPSIGNAL SIGINT
 CMD ["python", "-u", "handler.py"]

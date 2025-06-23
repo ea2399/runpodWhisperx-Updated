@@ -44,6 +44,11 @@ Anyone using your code will:
 2. **Add their own** HF token
 3. **Run normally** - everything works automatically
 
+## 📦 RunPod Deployment Note
+When deploying to RunPod, the `.env` file is automatically copied into your container.
+
+Alternatively, you can set `HF_TOKEN` as a **RunPod Secret** in your endpoint configuration. This is the most secure method and will override any value in the `.env` file.
+
 ## 🔒 **Security Benefits**
 
 - ✅ **No secrets in code** - tokens stay local

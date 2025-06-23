@@ -158,13 +158,13 @@ def load_diarization_model(config: Dict[str, Any]):
         # Get HF token from environment variable or config
         hf_token = os.getenv("HF_TOKEN") or config.get("hf_token")
         
-        if hf_token:
-            return whisperx.DiarizationPipeline(
-                use_auth_token=hf_token, 
-                device=config["device"]
-            )
-        else:
-            return whisperx.DiarizationPipeline(device=config["device"])
+        if not hf_token:
+            raise ValueError("HuggingFace token not found. Please set HF_TOKEN in your RunPod secrets or in the .env file.")
+
+        return whisperx.DiarizationPipeline(
+            use_auth_token=hf_token, 
+            device=config["device"]
+        )
     except Exception as e:
         raise RuntimeError(f"Failed to load diarization model: {str(e)}")
 
