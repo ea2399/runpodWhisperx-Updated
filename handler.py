@@ -8,6 +8,7 @@ import gc
 import torch
 from typing import Optional, Dict, Any, List
 from dotenv import load_dotenv
+from huggingface_hub.utils import HfHubHTTPError
 
 # Load environment variables from .env file
 load_dotenv()
@@ -137,13 +138,27 @@ def cleanup_temp_file(file_path: str) -> None:
 def load_transcription_model(config: Dict[str, Any]):
     """Load the transcription model with given configuration."""
     try:
+        # Ensure the HF token from the environment is used for downloads
+        hf_token = os.getenv("HF_TOKEN")
+        if hf_token:
+            os.environ["HUGGING_FACE_HUB_TOKEN"] = hf_token
+
         return whisperx.load_model(
-            config["model"], 
-            config["device"], 
+            config["model"],
+            config["device"],
             compute_type=config["compute_type"]
         )
+    except HfHubHTTPError as e:
+        if e.response.status_code == 401:
+            raise ValueError(
+                "Hugging Face authentication failed (401 Unauthorized). "
+                "Please double-check your HF_TOKEN in RunPod secrets. "
+                "Ensure it is correct, has 'read' permissions, and is not expired."
+            ) from e
+        else:
+            raise RuntimeError(f"Failed to download model from Hugging Face: {str(e)}") from e
     except Exception as e:
-        raise RuntimeError(f"Failed to load transcription model: {str(e)}")
+        raise RuntimeError(f"Failed to load transcription model: {str(e)}") from e
 
 def load_alignment_model(language: str, device: str):
     """Load the alignment model for the detected language."""
