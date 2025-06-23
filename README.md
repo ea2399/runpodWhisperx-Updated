@@ -55,6 +55,33 @@ If you want to test locally, can just run:
 https://docs.runpod.io/docs/local-testing
 
 This is assuming that you install requirements such as anything listed on the WHisperX repository and the runpod sdk.
+## Running on Runpod
+
+Follow these steps to deploy the container on [Runpod](https://runpod.io):
+
+1. **Build your image**
+   ```bash
+   docker build -t <docker-user>/runpodwhisperx:1.0 .
+   ```
+2. **Push it to Docker Hub**
+   ```bash
+   docker push <docker-user>/runpodwhisperx:1.0
+   ```
+3. **Create a Serverless Endpoint**
+   - Log into Runpod and open **Serverless > Create Endpoint**.
+   - Enter the image name you pushed.
+   - Select your GPU type and region.
+   - Set optional environment variables like `DEVICE` and `COMPUTE_TYPE`.
+   - Click **Create Endpoint** and copy the generated endpoint ID.
+4. **Send a request**
+   ```bash
+   curl -X POST https://api.runpod.ai/v2/<ENDPOINT_ID>/runsync \
+        -H 'Authorization: Bearer <RUNPOD_API_KEY>' \
+        -H 'Content-Type: application/json' \
+        -d @test_input.json
+   ```
+5. **View the results**
+   The API will return the transcription output in JSON.
 
 # Example Functions of me calling the runpod:
 
