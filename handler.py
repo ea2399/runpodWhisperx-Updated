@@ -1,3 +1,4 @@
+import requests
 import runpod
 import os
 import time
@@ -11,6 +12,20 @@ device = os.environ.get('DEVICE', 'cuda') # cpu if on Mac
 compute_type = os.environ.get('COMPUTE_TYPE', 'float16') #int8 if on Mac
 batch_size = 16 # reduce if low on GPU mem
 language_code = "en"
+
+# --- NEW: accept audio_url or raw_url --------------------------
+if 'audio_url' in job_input:
+    # stream-download to a temp file
+    with requests.get(job_input['audio_url'], stream=True, timeout=120) as r:
+        r.raise_for_status()
+        with tempfile.NamedTemporaryFile(delete=False, suffix=".audio") as tmp:
+            for chunk in r.iter_content(chunk_size=8192):
+                tmp.write(chunk)
+            local_path = tmp.name
+    # read bytes and convert to base-64 so downstream code is unchanged
+    with open(local_path, "rb") as f:
+        job_input['audio_base_64'] = base64.b64encode(f.read()).decode()
+    os.remove(local_path)
 
 def base64_to_tempfile(base64_file: str) -> str:
     '''
