@@ -29,6 +29,12 @@ RUN pip install --upgrade pip && \
 # Install FFmpeg
 RUN apt-get update && \
     apt-get install -y ffmpeg
+    
+# --- make CuDNN visible to the linker --------------------------------
+ENV LD_LIBRARY_PATH=/usr/local/cuda/lib64:$LD_LIBRARY_PATH
+RUN ln -sf /usr/lib/x86_64-linux-gnu/libcudnn_ops_infer.so.8 \
+           /usr/local/cuda/lib64/libcudnn_ops_infer.so.8
+# ---------------------------------------------------------------------
 
 # COPY the example.mp3 file to the container as a default testing audio file
 COPY example.mp3 /app/example.mp3
