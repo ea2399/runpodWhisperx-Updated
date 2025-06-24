@@ -156,6 +156,13 @@ This project doesn't use a traditional database. Instead, it processes audio fil
 - Improved error handling and logging
 - Support for all major WhisperX features
 - Optimized memory management
+- **Docker Container Improvements:**
+  - Models are now pre-downloaded during container build (eliminates runtime downloads)
+  - Improved cache directory setup with explicit permissions
+  - Better model verification and build logging
+  - Eliminates "No space left on device" errors on serverless workers
+  - Dramatically improved cold start times (no model downloads at runtime)
+  - Pre-baked models: large-v3, large-v2, medium + alignment models (en, fr, de)
 
 ## Migration Notes
 - All previous API calls remain compatible
