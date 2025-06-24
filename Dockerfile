@@ -57,21 +57,40 @@ RUN mkdir -p ${TORCH_HOME} ${HF_HOME} && \
 RUN python - <<'PY'
 import sys, types
 from importlib.machinery import ModuleSpec
-# Stub out torchvision to satisfy transformers's import machinery
-print("Creating a fake torchvision module to bypass transformers import checks...")
-stub = types.ModuleType('torchvision')
-stub.transforms = types.ModuleType('torchvision.transforms')
-class _Dummy: pass
-stub.transforms.InterpolationMode = _Dummy
-# Create a fake spec object. This is what importlib.util.find_spec looks for.
+
+# Stub out torchvision to satisfy all dependencies (transformers, torchmetrics)
+print("Creating a fake torchvision package to bypass import checks...")
+
+# --- Create the fake package and submodules ---
+torchvision_pkg = types.ModuleType('torchvision', 'Fake torchvision package')
+torchvision_pkg.__path__ = [] # Essential for a package
+
+models_mod = types.ModuleType('torchvision.models')
+class _resnet50: pass
+models_mod.resnet50 = _resnet50
+
+transforms_mod = types.ModuleType('torchvision.transforms')
+class _InterpolationMode: pass
+transforms_mod.InterpolationMode = _InterpolationMode
+
+torchvision_pkg.models = models_mod
+torchvision_pkg.transforms = transforms_mod
+
+# --- Inject all modules into sys.modules ---
+sys.modules['torchvision'] = torchvision_pkg
+sys.modules['torchvision.models'] = models_mod
+sys.modules['torchvision.transforms'] = transforms_mod
+
+# --- Add __spec__ to satisfy modern import machinery ---
 try:
-    spec = ModuleSpec(name='torchvision', loader=None)
-    stub.__spec__ = spec
-except Exception: # Fallback for older importlib
-    pass
-sys.modules['torchvision'] = stub
-sys.modules['torchvision.transforms'] = stub.transforms
-print("Fake torchvision module created and injected.")
+    torchvision_pkg.__spec__ = ModuleSpec(name='torchvision', loader=None, is_package=True)
+    models_mod.__spec__ = ModuleSpec(name='torchvision.models', loader=None)
+    transforms_mod.__spec__ = ModuleSpec(name='torchvision.transforms', loader=None)
+except Exception:
+    pass # For older python versions
+
+print("Fake torchvision package created and injected.")
+
 import whisperx
 print('Downloading large-v3 model...')
 model = whisperx.load_model('large-v3', 'cpu', compute_type='int8')
