@@ -3,3 +3,7 @@ whisperx==3.3.4
 huggingface_hub==0.33.0
 setuptools-rust>=1.7.0
 python-dotenv==1.0.0
+# Pin PyTorch versions to match the base image and avoid conflicts
+torch==2.2.0
+torchaudio==2.2.0
+torchvision==0.17.0
