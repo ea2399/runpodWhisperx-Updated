@@ -56,13 +56,22 @@ RUN mkdir -p ${TORCH_HOME} ${HF_HOME} && \
 # ──────────────────────────
 RUN python - <<'PY'
 import sys, types
-# Stub out torchvision to avoid heavy install / incompat errors
+from importlib.machinery import ModuleSpec
+# Stub out torchvision to satisfy transformers's import machinery
+print("Creating a fake torchvision module to bypass transformers import checks...")
 stub = types.ModuleType('torchvision')
 stub.transforms = types.ModuleType('torchvision.transforms')
 class _Dummy: pass
 stub.transforms.InterpolationMode = _Dummy
+# Create a fake spec object. This is what importlib.util.find_spec looks for.
+try:
+    spec = ModuleSpec(name='torchvision', loader=None)
+    stub.__spec__ = spec
+except Exception: # Fallback for older importlib
+    pass
 sys.modules['torchvision'] = stub
 sys.modules['torchvision.transforms'] = stub.transforms
+print("Fake torchvision module created and injected.")
 import whisperx
 print('Downloading large-v3 model...')
 model = whisperx.load_model('large-v3', 'cpu', compute_type='int8')
