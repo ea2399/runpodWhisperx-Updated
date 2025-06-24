@@ -67,7 +67,11 @@ torchvision_pkg.__path__ = [] # Essential for a package
 
 models_mod = types.ModuleType('torchvision.models')
 class _resnet50: pass
+class _VGG16_Weights: pass
+def _vgg16(): pass
 models_mod.resnet50 = _resnet50
+models_mod.VGG16_Weights = _VGG16_Weights
+models_mod.vgg16 = _vgg16
 
 transforms_mod = types.ModuleType('torchvision.transforms')
 class _InterpolationMode: pass
