@@ -29,6 +29,8 @@ RUN echo "en_US.UTF-8 UTF-8" > /etc/locale.gen
 # ──────────────────────────
 COPY requirements.txt .
 RUN pip install --upgrade pip && \
+    pip uninstall -y torch torchvision torchaudio && \
+    pip install torch==2.3.0 torchvision==0.18.0 torchaudio==2.3.0 --index-url https://download.pytorch.org/whl/cu121 && \
     pip install --no-cache-dir -r requirements.txt
 
 # ──────────────────────────
