@@ -162,7 +162,8 @@ This project doesn't use a traditional database. Instead, it processes audio fil
   - Better model verification and build logging
   - Eliminates "No space left on device" errors on serverless workers
   - Dramatically improved cold start times (no model downloads at runtime)
-  - Pre-baked models: large-v3, large-v2, medium + alignment models (en, fr, de)
+  - **Optimized build**: Only pre-downloads large-v3 model and English alignment for faster builds
+  - Reduced container size and build time while maintaining core functionality
 
 ## Migration Notes
 - All previous API calls remain compatible
