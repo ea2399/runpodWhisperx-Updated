@@ -54,9 +54,8 @@ RUN mkdir -p ${TORCH_HOME} ${HF_HOME} && \
 # Pre-download WhisperX models during build
 # This eliminates runtime downloads and disk space issues
 # ──────────────────────────
-RUN echo "Starting model pre-download..." && \
-    python - <<'PY'
-import sys, types, os
+RUN python - <<'PY'
+import sys, types
 # Stub out torchvision to avoid heavy install / incompat errors
 stub = types.ModuleType('torchvision')
 stub.transforms = types.ModuleType('torchvision.transforms')
@@ -73,8 +72,7 @@ align_model, metadata = whisperx.load_align_model('en', 'cpu')
 del align_model
 print('Models downloaded successfully!')
 PY
-    && echo "Model pre-download completed successfully!" && \
-    ls -la /cache/
+RUN ls -la /cache/
 
 # ──────────────────────────
 # App code
