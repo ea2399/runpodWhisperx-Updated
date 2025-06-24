@@ -1,4 +1,4 @@
-FROM runpod/pytorch:2.8.0-py3.11-cuda12.1.1-cudnn-devel-ubuntu22.04
+FROM runpod/pytorch:2.8.0-py3.11-cuda11.8.0-cudnn-devel-ubuntu22.04
 
 # ──────────────────────────
 # Basic setup
