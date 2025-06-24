@@ -1,51 +1,49 @@
-# 💾 RunPod Disk Space Guide ("No space left on device")
+# 💾 ~~RunPod Disk Space Guide~~ (SOLVED!)
 
-## 🎯 The Problem
+## ✅ **Problem Solved: Models Pre-Baked**
 
-When you see the error `Error: ... No space left on device (os error 28)`, it means the RunPod worker running your job doesn't have enough disk space to download the large Whisper model you requested (especially `large-v2` or `large-v3`).
+**Good news!** As of the latest version, this "No space left on device" error has been **permanently solved**.
 
-- **The `large-v3` model is ~3 GB.**
-- Default serverless workers often have limited storage.
+The WhisperX models (`large-v3`, `large-v2`, `medium`) are now **pre-downloaded during the Docker build process** and baked directly into the container image.
 
-## 🔧 The Solution: Increase Worker Disk Space
+### 🚀 **Benefits of Pre-Baked Models:**
 
-You need to edit your RunPod endpoint to allocate more storage to each worker.
+- ✅ **No More Disk Space Errors**: Models are already in the container
+- ✅ **Faster Cold Starts**: No waiting for 3GB downloads
+- ✅ **More Reliable**: No runtime network or authentication issues
+- ✅ **Consistent Performance**: Every worker has the models ready
 
-### Step-by-Step Instructions:
+### 📋 **What This Means for You:**
 
-1.  **Navigate to Your Endpoints**
-    - Go to the [RunPod Console](https://runpod.io/console/serverless/user/endpoints).
-    - Or navigate via **Serverless > My Endpoints**.
+- **You don't need to configure storage** in RunPod
+- **Your jobs start immediately** without model downloads
+- **The container is larger** (but RunPod handles this automatically)
+- **All major models are included**: `large-v3`, `large-v2`, `medium`
 
-2.  **Edit Your Endpoint**
-    - Find the endpoint you're using for WhisperX.
-    - Click the **three dots (...)** on the right side.
-    - Select **Edit Endpoint** from the dropdown menu.
+---
 
-    ![Edit Endpoint Menu](https://i.imgur.com/example-image.png) <!-- Placeholder image -->
+## 🔄 **Legacy Information (No Longer Needed)**
 
-3.  **Increase Storage Allocation**
-    - In the endpoint settings, find the **Volume Size** or **Temporary Storage** field.
-    - **Increase the value.**
+<details>
+<summary>Old instructions for manual storage configuration (kept for reference)</summary>
 
-    **Recommended Sizes:**
-    - For `large-v2` model: **10 GB**
-    - For `large-v3` model: **15 GB** (This is a safe value)
+### ~~The Old Problem~~
 
-    ![Storage Setting](https://i.imgur.com/example-image.png) <!-- Placeholder image -->
+When you saw the error `Error: ... No space left on device (os error 28)`, it meant the RunPod worker didn't have enough disk space to download the large Whisper model.
 
-4.  **Update the Endpoint**
-    - Scroll down and click **Update Endpoint**.
+### ~~The Old Solution: Increase Worker Disk Space~~
 
-## ✅ What Happens Next?
+You used to need to edit your RunPod endpoint to allocate more storage to each worker, but this is **no longer necessary**.
 
-- Your endpoint will update.
-- **Any new job** you run will be assigned to a new worker that has the larger disk space you allocated.
-- The "No space left on device" error will be resolved.
+</details>
 
-## 💡 Pro Tip
+---
 
-- **Don't set it too low**: It's better to have a little extra space than to hit the limit again. 15 GB is a very safe bet for the largest models.
-- **Cost**: Be aware that increasing volume size may slightly increase the cost of your serverless runs, but it's usually a very small amount.
+## 🎉 **Just Deploy and Use!**
 
-By following these steps, you provide enough space for the powerful `large-v3` model to be downloaded and used for your high-quality transcriptions. 
+With pre-baked models, you can now:
+1. Deploy your endpoint
+2. Send requests immediately
+3. Get fast, high-quality transcriptions
+
+No storage configuration needed! 

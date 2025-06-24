@@ -14,6 +14,7 @@ This is an **Enhanced Docker Image** that runs the [WhisperX](https://github.com
 - 📝 **Advanced Alignment**: Word-level and character-level alignment options
 - 🛡️ **Error Handling**: Comprehensive validation and error reporting
 - 📊 **Detailed Output**: Enhanced response format with metadata
+- 🚀 **Pre-Baked Models**: All major models (`large-v3`, `large-v2`, `medium`) are pre-downloaded for instant cold starts
 
 ## Basic Usage
 

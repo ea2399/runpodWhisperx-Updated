@@ -5,7 +5,7 @@ FROM runpod/pytorch:2.8.0-py3.11-cuda12.8.1-cudnn-devel-ubuntu22.04
 # ──────────────────────────
 WORKDIR /app
 
-ARG WHISPER_MODEL=small
+ARG WHISPER_MODEL=large-v3
 ARG LANG=en
 ARG TORCH_HOME=/cache/torch
 ARG HF_HOME=/cache/huggingface
@@ -41,6 +41,18 @@ RUN apt-get update && \
         libcudnn8=8.9.7.* \
         libcudnn8-dev=8.9.7.* && \
     apt-get clean && rm -rf /var/lib/apt/lists/*
+
+# ──────────────────────────
+# Pre-download WhisperX models during build
+# This eliminates runtime downloads and disk space issues
+# ──────────────────────────
+RUN python -c "import whisperx; whisperx.load_model('large-v3', 'cpu', compute_type='int8')" && \
+    python -c "import whisperx; whisperx.load_model('large-v2', 'cpu', compute_type='int8')" && \
+    python -c "import whisperx; whisperx.load_model('medium', 'cpu', compute_type='int8')" && \
+    python -c "import whisperx; whisperx.load_align_model('en', 'cpu')" && \
+    python -c "import whisperx; whisperx.load_align_model('fr', 'cpu')" && \
+    python -c "import whisperx; whisperx.load_align_model('de', 'cpu')" && \
+    echo "Models pre-downloaded successfully"
 
 # ──────────────────────────
 # App code
