@@ -125,6 +125,10 @@
 **Out of memory error**:
 - Your GPU might be smaller - try `batch_size: 2` instead of 4
 
+**"No space left on device" error**:
+- Your worker needs more disk space for the large model.
+- See `RUNPOD_DISK_SPACE_GUIDE.md` for a step-by-step fix.
+
 **Hebrew/Yiddish words not recognized**:
 - Add specific terms to the `initial_prompt` in your payload file
 

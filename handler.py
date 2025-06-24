@@ -105,22 +105,22 @@ def validate_input(job_input: Dict[str, Any]) -> Dict[str, Any]:
 def download_to_temp(url: str) -> str:
     """Stream an audio/video file from URL into a temp file."""
     try:
-        with requests.get(url, stream=True, timeout=180) as r:
-            r.raise_for_status()
-            suffix = os.path.splitext(url.split("?")[0])[1] or ".audio"
-            with tempfile.NamedTemporaryFile(delete=False, suffix=suffix) as tmp:
-                for chunk in r.iter_content(chunk_size=8192):
-                    tmp.write(chunk)
-                return tmp.name
+    with requests.get(url, stream=True, timeout=180) as r:
+        r.raise_for_status()
+        suffix = os.path.splitext(url.split("?")[0])[1] or ".audio"
+        with tempfile.NamedTemporaryFile(delete=False, suffix=suffix) as tmp:
+            for chunk in r.iter_content(chunk_size=8192):
+                tmp.write(chunk)
+            return tmp.name
     except Exception as e:
         raise ValueError(f"Failed to download audio from URL: {str(e)}")
 
 def base64_to_temp(b64: str) -> str:
     """Convert Base64 string to temp audio file."""
     try:
-        with tempfile.NamedTemporaryFile(delete=False, suffix=".audio") as tmp:
-            tmp.write(base64.b64decode(b64))
-            return tmp.name
+    with tempfile.NamedTemporaryFile(delete=False, suffix=".audio") as tmp:
+        tmp.write(base64.b64decode(b64))
+        return tmp.name
     except Exception as e:
         raise ValueError(f"Failed to decode base64 audio data: {str(e)}")
 
@@ -278,13 +278,13 @@ def handler(event: Dict[str, Any]) -> Dict[str, Any]:
     local_audio_path = None
     
     try:
-        job_input = event.get("input", {})
-        
+    job_input = event.get("input", {})
+
         # Validate and normalize configuration
         config = validate_input(job_input)
         
         # Get audio file and validate URL
-        if "audio_url" in job_input:
+    if "audio_url" in job_input:
             audio_url = job_input["audio_url"]
             if not audio_url or "your-audio-url.mp3" in audio_url:
                 raise ValueError("Please provide a valid 'audio_url' in your input payload.")
@@ -347,4 +347,4 @@ def handler(event: Dict[str, Any]) -> Dict[str, Any]:
 #  Start the serverless worker
 # ------------------------------------------------------------------
 if __name__ == "__main__":
-    runpod.serverless.start({"handler": handler})
+runpod.serverless.start({"handler": handler})
