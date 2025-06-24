@@ -55,8 +55,25 @@ RUN mkdir -p ${TORCH_HOME} ${HF_HOME} && \
 # This eliminates runtime downloads and disk space issues
 # ──────────────────────────
 RUN echo "Starting model pre-download..." && \
-    python -c "import whisperx; print('Downloading large-v3 model...'); model = whisperx.load_model('large-v3', 'cpu', compute_type='int8'); del model; print('Downloading English alignment model...'); align_model, metadata = whisperx.load_align_model('en', 'cpu'); del align_model; print('Models downloaded successfully!')" && \
-    echo "Model pre-download completed successfully!" && \
+    python - <<'PY'
+import sys, types, os
+# Stub out torchvision to avoid heavy install / incompat errors
+stub = types.ModuleType('torchvision')
+stub.transforms = types.ModuleType('torchvision.transforms')
+class _Dummy: pass
+stub.transforms.InterpolationMode = _Dummy
+sys.modules['torchvision'] = stub
+sys.modules['torchvision.transforms'] = stub.transforms
+import whisperx
+print('Downloading large-v3 model...')
+model = whisperx.load_model('large-v3', 'cpu', compute_type='int8')
+del model
+print('Downloading English alignment model...')
+align_model, metadata = whisperx.load_align_model('en', 'cpu')
+del align_model
+print('Models downloaded successfully!')
+PY
+    && echo "Model pre-download completed successfully!" && \
     ls -la /cache/
 
 # ──────────────────────────
