@@ -16,7 +16,8 @@ ENV TORCH_HOME=${TORCH_HOME} \
     LANG=${LANG} \
     DEBIAN_FRONTEND=noninteractive \
     # keep CUDA libs in search path
-    LD_LIBRARY_PATH=/usr/local/cuda/lib64:$LD_LIBRARY_PATH
+    LD_LIBRARY_PATH=/usr/local/cuda/lib64:$LD_LIBRARY_PATH \
+    TRANSFORMERS_NO_TORCHVISION_IMPORTS=1
 
 # ──────────────────────────
 # Locale (optional)
@@ -28,7 +29,8 @@ RUN echo "en_US.UTF-8 UTF-8" > /etc/locale.gen
 # ──────────────────────────
 COPY requirements.txt .
 RUN pip install --upgrade pip && \
-    pip install --no-cache-dir -r requirements.txt
+    pip install --no-cache-dir -r requirements.txt && \
+    pip uninstall -y -qq torchvision || true
 
 # ──────────────────────────
 # System packages
