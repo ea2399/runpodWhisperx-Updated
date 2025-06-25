@@ -194,16 +194,11 @@ def load_diarization_model(config: Dict[str, Any]):
 def transcribe_audio(model, audio, config: Dict[str, Any]) -> Dict[str, Any]:
     """Perform transcription with the given configuration."""
     transcribe_options = {
-        "batch_size": config["batch_size"],
-        "condition_on_prev_text": config["condition_on_prev_text"],
-        "without_timestamps": config["without_timestamps"]
+        "batch_size": config["batch_size"]
     }
     
     if config["language"] != "auto":
         transcribe_options["language"] = config["language"]
-    
-    if config["initial_prompt"]:
-        transcribe_options["initial_prompt"] = config["initial_prompt"]
     
     try:
         result = model.transcribe(audio, **transcribe_options)
