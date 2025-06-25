@@ -195,7 +195,7 @@ def transcribe_audio(model, audio, config: Dict[str, Any]) -> Dict[str, Any]:
     """Perform transcription with the given configuration."""
     transcribe_options = {
         "batch_size": config["batch_size"],
-        "condition_on_previous_text": config["condition_on_prev_text"],
+        "condition_on_prev_text": config["condition_on_prev_text"],
         "without_timestamps": config["without_timestamps"]
     }
     
