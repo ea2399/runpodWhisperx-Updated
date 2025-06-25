@@ -54,6 +54,28 @@ RUN mkdir -p ${TORCH_HOME} ${HF_HOME} && \
 # ──────────────────────────
 RUN python -c "import whisperx; print('Downloading large-v3 model...'); model = whisperx.load_model('large-v3', 'cpu', compute_type='int8'); del model; print('Downloading English alignment model...'); align_model, metadata = whisperx.load_align_model('en', 'cpu'); del align_model; print('Models downloaded successfully!')"
 
+# ──────────────────────────
+# Pre-download diarization models during build
+# This eliminates serverless disk space issues
+# Note: Requires HF_TOKEN to be set during build
+# ──────────────────────────
+ARG HF_TOKEN
+ENV HF_TOKEN=${HF_TOKEN}
+RUN if [ -n "$HF_TOKEN" ]; then \
+        echo "Downloading diarization models..."; \
+        python -c "import whisperx; \
+        try: \
+            diarize_model = whisperx.DiarizationPipeline(use_auth_token='$HF_TOKEN', device='cpu'); \
+            print('Diarization models downloaded successfully!'); \
+            del diarize_model; \
+        except Exception as e: \
+            print('Warning: Could not download diarization models:', str(e)); \
+            print('Diarization will require runtime download'); \
+        "; \
+    else \
+        echo "No HF_TOKEN provided, skipping diarization model download"; \
+    fi
+
 RUN ls -la /cache/
 
 # ──────────────────────────
