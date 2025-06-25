@@ -215,7 +215,7 @@ def align_transcription(segments: List[Dict], audio, config: Dict[str, Any], det
         align_model, metadata = load_alignment_model(language_for_alignment, config["device"])
         
         align_options = {
-            "return_char_alignments": config["return_char_alignments"],
+            "return_char_alignments": False,
             "interpolate_method": config["interpolate_method"]
         }
         
